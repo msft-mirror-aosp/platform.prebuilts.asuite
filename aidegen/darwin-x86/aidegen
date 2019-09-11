@@ -14,14 +14,14 @@
 # limitations under the License.
 
 # Check python3 availability.
-desired_pyver=3.7.0
+desired_pyver=3.6.0
 function helper() {
     cat << END
 To install Python $desired_pyver, you may want to follow either approach:
 * homebrew: https://hackercodex.com/guide/python-development-environment-on-mac-osx/
 * macports: https://www.macports.org/install.php
-            and run "port -N install python37"
-* from package: https://www.python.org/downloads/release/python-370/
+            and run "port -N install python36"
+* from package: https://www.python.org/downloads/release/python-360/
             download and install the appropriate one.
 END
 }
