@@ -6,3 +6,4 @@
 
 # Below records the timestamp of last time of running "repo sync".
 **/.repo_sync.log
+**/__pycache__
