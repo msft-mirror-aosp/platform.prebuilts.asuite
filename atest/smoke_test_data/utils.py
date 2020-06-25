@@ -103,3 +103,29 @@ def init_test_mapping_files(action='delete'):
     elif action == 'delete':
         cmd = 'find {} -name TEST_MAPPING -exec rm -f {{}} \;'.format(SMOKE_DIR)
         subprocess.call(cmd, shell=True)
+
+
+def get_test_counts():
+    """Get the number of testing targets are as expected from test_result.
+
+    E.g. atest targetA targetB, running get_test_counts() should return 2.
+
+    Returns:
+        An integer that AtestTradefedTestRunner appears in test_result.
+    """
+    if os.path.exists(TEST_RESULT):
+        with open(TEST_RESULT, 'r') as cache:
+            result = json.load(cache)
+        return len(result['test_runner']['AtestTradefedTestRunner'].keys())
+    return 0
+
+
+def func_wrapper(func, args):
+    """This method is for the convenience of invoking the function by passing
+    argument as a list.
+
+    Args:
+        func: A method name.
+        args: A list of argument.
+    """
+    func(*args)
