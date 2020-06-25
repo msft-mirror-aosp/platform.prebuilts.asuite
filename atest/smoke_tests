@@ -30,7 +30,7 @@ ATEST_BIN = os.path.join(
 # Append more tests in the ordered list below, and provide a main() so that
 # smoke_tests can invoke them directly.
 # TODO: b/153411501 support --enable-file-patterns in the future.
-TESTS = ['lookup_tests', 'test_mappings']
+TESTS = ['lookup_tests', 'test_mappings', 'include_subdirs']
 
 
 if __name__ == '__main__':
