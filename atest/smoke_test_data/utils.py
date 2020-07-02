@@ -129,3 +129,59 @@ def func_wrapper(func, args):
         args: A list of argument.
     """
     func(*args)
+
+
+def get_test_threads():
+    """Get the number of running threads.
+
+    If 3 tests within the testable module, and the iteration number is 5,
+    the ModuleListener will appear 15 times.
+
+    Returns:
+        An integer that ModuleListener appears in host_log.
+    """
+    cmd = ('zcat /tmp/atest_result/LATEST/log/in*/host_log*.zip'
+           '| grep "ModuleListener" | wc -l')
+    return subprocess.check_output(cmd, shell=True).decode().strip()
+
+
+def get_passed_counts():
+    """Get the number of PASSED in end_host_log.
+
+    Returns:
+        An integer that shows PASSED in end_host_log.
+    """
+    cmd = ('zcat /tmp/atest_result/LATEST/log/in*/end_host_log*.zip'
+           '| grep PASSED | awk -F": " \'{{print $2}}\'')
+    return subprocess.check_output(cmd, shell=True).decode().strip()
+
+
+def get_failed_counts():
+    """Get the number of FAILED in end_host_log.
+
+    Returns:
+        An integer that shows PASSED in end_host_log.
+    """
+    cmd = ('zcat /tmp/atest_result/LATEST/log/in*/end_host_log*.zip'
+           '| grep FAILED | awk -F": " \'{{print $2}}\'')
+    return subprocess.check_output(cmd, shell=True).decode().strip()
+
+
+def has_correct_passed_failed_counts(passes, failures):
+    """Given desired passed and failed numbers, and return if they are the same
+    as expectation.
+
+    Args:
+        passes: An integer of desired passed number.
+        failures: An integer of desired failed number.
+
+    Returns:
+        A boolean: True if both passed/failed numbers match the result,
+            otherwise False.
+    """
+    if not is_identical(passes, get_passed_counts(), "PASSED number"):
+        return False
+    if not is_identical(failures, get_failed_counts(), "FAILED number"):
+        return False
+    return True
+
