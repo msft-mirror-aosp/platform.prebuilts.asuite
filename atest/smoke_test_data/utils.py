@@ -194,3 +194,15 @@ def has_correct_passed_failed_counts(passes, failures):
     if not is_identical(failures, get_failed_counts(), "FAILED number"):
         return False
     return True
+
+
+def has_devices():
+    """Method that probes attached devices.
+
+    Returns:
+        True: when there are either physical/virtual devices.
+        False: when no devices or no adb command; acloud will build adb
+               automatically.
+    """
+    cmd = 'adb devices | egrep -v "^List|^$"'
+    return not bool(subprocess.call(cmd, shell=True))
