@@ -20,13 +20,15 @@ import sys
 import utils
 
 # Must assign TITLE so that smoke_tests is able to print it.
-ATEST = ['atest']
 SMOKE_DIR = os.path.dirname(os.path.realpath(__file__))
 TITLE = "--test-mapping"
 
 
-def test_TEST_MAPPING_in_CWD():
+def test_TEST_MAPPING_in_CWD(exec):
     """Test the atest default behaviour: find TEST_MAPPING in cwd.
+
+    Args:
+        exec: the atest command.
 
     The test result will be like running:
     $ cd prebuilts/asuite/atest/smoke_test_data/test_mappings
@@ -35,15 +37,18 @@ def test_TEST_MAPPING_in_CWD():
     print(inspect.currentframe().f_code.co_name)
     os.chdir(os.path.join(SMOKE_DIR, 'test_mappings', 'A'))
     expected_rc = 0
-    actual_rc = subprocess.call(ATEST)
+    actual_rc = subprocess.call(exec)
     error_msg = 'Failed testing TEST_MAPPING in {}'.format(os.getcwd())
     if not utils.is_passed(expected_rc, actual_rc, '', error_msg):
         utils.init_test_mapping_files(action='delete')
         sys.exit(1)
 
 
-def test_TEST_MAPPING_in_path():
+def test_TEST_MAPPING_in_path(exec):
     """Test finding TEST_MAPPING in a specific path.
+
+    Args:
+        exec: the atest command.
 
     The test result will be like running:
     $ atest -p prebuilts/asuite/atest/smoke_test_data/test_mappings
@@ -51,7 +56,7 @@ def test_TEST_MAPPING_in_path():
     print(inspect.currentframe().f_code.co_name)
     dest_dir = os.path.join(SMOKE_DIR, 'test_mappings', 'A')
     args = '{} {}'.format(TITLE, dest_dir)
-    cmd = ATEST + args.split()
+    cmd = exec + args.split()
     expected_rc = 0
     actual_rc = subprocess.call(cmd)
     error_msg = 'Failed testing TEST_MAPPING in path {}'.format(dest_dir)
@@ -60,8 +65,11 @@ def test_TEST_MAPPING_in_path():
         sys.exit(1)
 
 
-def test_no_TEST_MAPPING():
+def test_no_TEST_MAPPING(exec):
     """Test cannot find TEST_MAPPING from cwd to ANDROID_BUILD_TOP.
+
+    Args:
+        exec: the atest command.
 
     The test result will be like running:
     $ cd prebuilts/asuite/atest/smoke_test_data
@@ -70,7 +78,7 @@ def test_no_TEST_MAPPING():
     print(inspect.currentframe().f_code.co_name)
     os.chdir(SMOKE_DIR)
     expected_rc = 4
-    actual_rc = subprocess.call(ATEST)
+    actual_rc = subprocess.call(exec)
     error_msg = ('Mismatch exit code: The EXIT_CODE_TEST_NOT_FOUND '
                  'should be {}, but {} found'.format(actual_rc, expected_rc))
     if actual_rc != expected_rc:
@@ -86,7 +94,8 @@ def main():
              test_no_TEST_MAPPING]
     utils.init_test_mapping_files(action='create')
     for i, test in enumerate(tests):
+        ATEST = ['atest'] if utils.has_devices() else ['atest', '--start-avd']
         print('\n[{}/{}] '.format(i+1, len(tests)), end='')
-        tests[i]()
+        tests[i](ATEST)
     utils.init_test_mapping_files(action='delete')
     utils.print_banner(TITLE, True)
