@@ -45,7 +45,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Rebuild module_info.json at the beginning.
-    os.system('atest -mc --dry-run hello_world_test')
+    os.system('{} -mc --dry-run hello_world_test'.format(ATEST))
     sys.path.append(utils.SMOKE_DIR)
     _modules = {}
     for test in TESTS:
