@@ -29,7 +29,8 @@ ATEST_BIN = os.path.join(
     os.getenv(utils.TOP), 'prebuilts/asuite', ATEST, OS_TYPE, ATEST)
 # Append more tests in the ordered list below, and provide a main() so that
 # smoke_tests can invoke them directly.
-TESTS = ['lookup_tests']
+# TODO: b/153411501 support --enable-file-patterns in the future.
+TESTS = ['lookup_tests', 'test_mappings', 'include_subdirs', 'iterations']
 
 
 if __name__ == '__main__':
@@ -43,6 +44,8 @@ if __name__ == '__main__':
         print('Warning: currently using: {}'.format(shutil.which(ATEST)))
         sys.exit(1)
 
+    # Rebuild module_info.json at the beginning.
+    os.system('{} -mc --dry-run hello_world_test'.format(ATEST))
     sys.path.append(utils.SMOKE_DIR)
     _modules = {}
     for test in TESTS:
