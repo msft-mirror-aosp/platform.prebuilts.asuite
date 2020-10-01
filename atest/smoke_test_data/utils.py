@@ -140,8 +140,18 @@ def get_test_threads():
     Returns:
         An integer that ModuleListener appears in host_log.
     """
+    # Example of a host log:
+    # D/ModuleListener: ModuleListener.testRunStarted(atest_will_pass_tests, 3, 0)
+    # D/ModuleListener: ModuleListener.testStarted(atest_will_pass_tests#PrintAtestPass)
+    # I/ModuleListener: [1/3] atest_will_pass_tests#PrintAtestPass PASSED
+    # D/ModuleListener: ModuleListener.testStarted(atest_will_pass_tests#PassEqual)
+    # I/ModuleListener: [2/3] atest_will_pass_tests#PassEqual PASSED
+    # D/ModuleListener: ModuleListener.testStarted(atest_will_pass_tests#PassFloatEqual)
+    # I/ModuleListener: [3/3] atest_will_pass_tests#PassFloatEqual PASSED
+    #
+    # Grab pattern 'ModuleListener: [3/3]' to decide how many testing threads.
     cmd = ('zcat /tmp/atest_result/LATEST/log/in*/host_log*.zip'
-           '| grep "ModuleListener" | wc -l')
+           '| egrep "ModuleListener:\s+\[[[:digit:]]/[[:digit:]]\]" | wc -l')
     return subprocess.check_output(cmd, shell=True).decode().strip()
 
 
@@ -185,3 +195,14 @@ def has_correct_passed_failed_counts(passes, failures):
         return False
     return True
 
+
+def has_devices():
+    """Method that probes attached devices.
+
+    Returns:
+        True: when there are either physical/virtual devices.
+        False: when no devices or no adb command; acloud will build adb
+               automatically.
+    """
+    cmd = 'adb devices | egrep -v "^List|^$"'
+    return not bool(subprocess.call(cmd, shell=True))
