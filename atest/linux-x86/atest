@@ -66,14 +66,9 @@ def has_command(cmd):
 if __name__ == '__main__':
     if not has_command(PYTHON):
         print_message(FALLBACK_MSG)
-        status = os.system(' '.join([FALLBACK_ATEST] + sys.argv[1:]))
+        os.execv(FALLBACK_ATEST, sys.argv)
     else:
         # Print warning if the installed python3 doesn't meet the requirement.
         if not has_valid_python3(MIN_PY3_VERSION):
             print_message(DISCLAIMER_MSG)
-        status = os.system(' '.join([ATEST] + sys.argv[1:]))
-    # On Unix, the return value is the exit status of the process encoded in the format specified for wait().
-    # wait() retuen code: A 16-bit number, whose low byte is the signal number that killed the process, and whose
-    # high byte is the exit status (if the signal number is zero);
-    exit_code = status >> 8
-    exit(exit_code)
+        os.execv(ATEST, sys.argv)
