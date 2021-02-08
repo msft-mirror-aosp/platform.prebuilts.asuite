@@ -27,6 +27,9 @@ cc_test {
     ],
 
     host_supported: true,
+    test_options: {
+        unit_test: false,
+    },
 }
 
 // Native test module which contains 1 will-pass test and 2 will-fail tests.
@@ -40,4 +43,7 @@ cc_test {
     ],
 
     host_supported: true,
+    test_options: {
+        unit_test: false,
+    },
 }
