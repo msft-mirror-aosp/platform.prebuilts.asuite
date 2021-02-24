@@ -13,6 +13,10 @@
 // limitations under the License.
 
 // Native test module which contains 3 will-pass tests.
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
 cc_test {
     name: "atest_will_pass_tests",
     srcs: ["atest_will_pass_tests.cpp"],
@@ -23,6 +27,9 @@ cc_test {
     ],
 
     host_supported: true,
+    test_options: {
+        unit_test: false,
+    },
 }
 
 // Native test module which contains 1 will-pass test and 2 will-fail tests.
@@ -36,5 +43,7 @@ cc_test {
     ],
 
     host_supported: true,
+    test_options: {
+        unit_test: false,
+    },
 }
-
