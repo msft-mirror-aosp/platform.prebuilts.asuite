@@ -13,8 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ATEST_DIR=$(dirname $0)
-[ "$(uname -s)" == "Darwin" ] && { realpath(){ echo "$(cd $(dirname $1);pwd -P)/$(basename $1)"; }; }
+if [ "$(uname -s)" == "Darwin" ]; then
+    ATEST_DIR=$(dirname $(readlink "$0"))
+    realpath(){ echo "$(cd $(dirname $1);pwd -P)/$(basename $1)"; }
+else
+    ATEST_DIR=$(dirname "$0")
+fi
 
 function get_python_version() {
     python - << END
