@@ -47,11 +47,13 @@ RUN useradd -mu ${UID} ${USER} && \
         tzdata \
         python-dev \
         python3-dev \
-        xsltproc
+        xsltproc \
+        sudo
 
 # Configuring tzdata noninteractively
 RUN ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
+    dpkg-reconfigure -f noninteractive tzdata && \
+    echo "${USER} ALL=(ALL:ALL)NOPASSWD: ALL" > /etc/sudoers.d/${USER}
 ENV LANG=C.UTF-8
 
 # Run smoke_tests by default unless overriding the startup command.
