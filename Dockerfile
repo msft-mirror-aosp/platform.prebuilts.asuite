@@ -22,6 +22,7 @@ ENV USER=${USER}
 # Installing AOSP essential packages and creating the local user.
 # The UID inside and outside must be the same.
 RUN useradd -mu ${UID} ${USER} && \
+    sed -i 's/archive/tw.archive/' /etc/apt/sources.list && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get update -qq && apt-get install -y \
         git-core \
@@ -50,11 +51,12 @@ RUN useradd -mu ${UID} ${USER} && \
         sudo
 
 # Configuring tzdata noninteractively
-RUN dpkg-reconfigure -f noninteractive tzdata && \
-    echo "${USER} ALL=(ALL:ALL)NOPASSWD: ALL" > /etc/sudoers.d/${USER} && \
-	mkdir ${SRCTOP} && chown -R ${USER} ${SRCTOP}
-RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /bin/repo && chmod +x /bin/repo
+RUN ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata && \
+    echo "${USER} ALL=(ALL:ALL)NOPASSWD: ALL" > /etc/sudoers.d/${USER}
 ENV LANG=C.UTF-8
 
+# Run smoke_tests by default unless overriding the startup command.
 USER ${USER}
 WORKDIR ${SRCTOP}
+CMD ["prebuilts/asuite/aidegen/smoke_tests"]
