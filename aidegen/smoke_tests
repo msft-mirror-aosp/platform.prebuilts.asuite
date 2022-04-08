@@ -20,6 +20,9 @@ TARGET="aosp_cf_x86_phone-userdebug"
 # Variables that will be used when creating docker image.
 IMAGE="aosp/asuite"
 DOCKERFILE_DIR=$(realpath $(dirname $0)/..)
+# Whenever amending Dockerfile, update the md5 checksum accordingly.
+DOCKERFILE_MD5SUM="40ffbf07477406a7cd6c709cb7ee6c3a"
+SLIENCE_FLAG='>/dev/null 2>&1'
 
 # The core functional tests for AIDEGen.
 function run_functiontests() {
@@ -80,7 +83,7 @@ function has_docker() {
     if ! systemctl is-active docker -q; then
         echo "[Error] Docker daemon not running."
         exit 1
-    elif ! docker ps -q 2>/dev/null; then
+    elif ! docker ps $SILENCE_FLAG; then
         echo "[Error] $USER not in docker group."
         exit 1
     fi
@@ -93,35 +96,17 @@ function has_docker_image() {
         echo "[Info] Docker image $IMAGE not found."
         return 1
     fi
-}
-
-function helper() {
-    cat << END
-Usage:
-
-smoke_tests: run aidegen functional tests. If docker is unavailable, run
-             functional test directly; otherwise build necessary image before
-             running tests.
-smoke_tests -m: force rebuilding a new image and running smoke testing,
-                especially after a new Dockerfile has been updated.
-
-Whenever needs to access the instance for investigation, please issue:
-    docker run -it -v $ANDROID_BUILD_TOP:$SRCTOP $IMAGE bash
-
-END
-    exit 0
+    checksum=$(md5sum $DOCKERFILE_DIR/Dockerfile | awk '{print $1}')
+    if [[ $checksum != $DOCKERFILE_MD5SUM ]]; then
+        echo "[Info] Docker image $IMAGE is outdated."
+        return 1
+    fi
 }
 
 # Run functional tests directly when in MacOS or in a container.
 # Pass IS_CONTAINER=true to run functional tests when Docker is installed on Linux.
 function main() {
     check_env
-    while getopts ":m" opt; do
-        case "$opt" in
-            m) has_docker && build_docker_image;;
-            *) helper;;
-        esac
-    done
     if ! has_docker; then
         m clean
         run_functiontests
@@ -133,4 +118,4 @@ function main() {
     fi
 }
 
-main "$@"
+main

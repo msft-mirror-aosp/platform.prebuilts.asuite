@@ -36,11 +36,7 @@ def _get_prebuilt_bins():
     Returns:
         A set of prebuilt binaries.
     """
-    bins = {os.path.join(prj, arch, prj) for prj in PROJECTS for arch in ARCHS}
-    # atest becomes an entrypoint which invokes atest-py2 and atest-py3 accordingly.
-    bins.add('atest/linux-x86/atest-py2')
-    bins.add('atest/linux-x86/atest-py3')
-    return bins
+    return {os.path.join(prj, arch, prj) for prj in PROJECTS for arch in ARCHS}
 
 
 def _get_prebuilt_dirs():
@@ -150,7 +146,7 @@ def run_smoke_tests_pass(files_to_check):
     """
     for target in files_to_check:
         if target in _get_prebuilt_bins():
-            project = target.split(os.path.sep)[0]
+            project = os.path.basename(target)
             test_file = _get_smoke_tests_bins().get(project)
             if os.path.exists(test_file):
                 try:
