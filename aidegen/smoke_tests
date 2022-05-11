@@ -71,7 +71,7 @@ function build_docker_image() {
 # TODO: Move this method to asuite.sh.
 function run_docker_instance() {
     echo "[Info] Start a Docker container..."
-    docker run --rm -v $ANDROID_BUILD_TOP:$SRCTOP $IMAGE
+    docker run --rm -v $ANDROID_BUILD_TOP:$SRCTOP $IMAGE prebuilts/asuite/aidegen/smoke_tests
 }
 
 # TODO: Move this method to asuite.sh.
