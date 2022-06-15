@@ -16,4 +16,3 @@
 
 LOCAL_PATH := $(call my-dir)
 $(call dist-for-goals,droidcore,$(LOCAL_PATH)/acloud:acloud_prebuilt)
-$(call declare-1p-target,$(LOCAL_PATH)/acloud,prebuilts/asuite)
