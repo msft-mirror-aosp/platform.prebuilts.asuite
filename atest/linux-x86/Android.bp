@@ -1,0 +1,4 @@
+filegroup {
+    name: "atest-py3-prebuilt",
+    srcs: ["atest-py3"],
+}
