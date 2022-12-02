@@ -1,0 +1,8 @@
+{
+  "presubmit": [
+    {
+      "name": "atest_normal_mode_integration_test"
+    }
+  ]
+}
+
