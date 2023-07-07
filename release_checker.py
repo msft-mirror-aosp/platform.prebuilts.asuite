@@ -37,8 +37,6 @@ def _get_prebuilt_bins():
         A set of prebuilt binaries.
     """
     bins = {os.path.join(prj, arch, prj) for prj in PROJECTS for arch in ARCHS}
-    # atest becomes an entrypoint which invokes atest-py2 and atest-py3 accordingly.
-    bins.add('atest/linux-x86/atest-py2')
     bins.add('atest/linux-x86/atest-py3')
     return bins
 
