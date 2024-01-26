@@ -23,4 +23,6 @@ if __name__ == '__main__':
         sys.exit(1)
     env_vars = os.environ.copy()
     os.chdir(top)
-    sys.exit(os.system('tools/asuite/atest/atest_integration_tests.py -cy'))
+    cmd = ('python tools/asuite/atest/integration_tests/'
+           'atest_command_verification_tests.py --use-prebuilt-atest-binary')
+    sys.exit(os.system(cmd))
