@@ -152,6 +152,8 @@ def run_smoke_tests_pass(files_to_check):
             test_file = _get_smoke_tests_bins().get(project)
             if os.path.exists(test_file):
                 try:
+                    print(f'Running test binary {test_file} which may take'
+                          ' several minutes...')
                     subprocess.check_output(test_file, encoding='utf-8',
                                             stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as error:
