@@ -1,8 +1,0 @@
-package {
-    default_applicable_licenses: ["Android-Apache-2.0"],
-}
-
-filegroup {
-    name: "atest-py3-prebuilt",
-    srcs: ["atest-py3"],
-}
